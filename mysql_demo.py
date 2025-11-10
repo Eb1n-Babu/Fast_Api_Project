@@ -29,6 +29,6 @@ def add(name: str, email: str):
 def all_users():
     cur = conn.cursor()
     cur.execute("SELECT * FROM users")
-    rows = cur.fetchall()
-    users = [{"id": r[0], "name": r[1], "email": r[2]} for r in rows]
-    return {"total": len(users), "users": users}
+    rows = cur.fetchall()  # Store the result in a variable
+    cur.close()  # Good practice: close cursor after use
+    return {"users": rows}

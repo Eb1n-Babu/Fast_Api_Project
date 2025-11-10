@@ -25,3 +25,13 @@ def get_book(book_id: int):
 def create_book(book: Book):
     book_db.append(book)
     return book
+
+@app.put("/books/{book_id}")
+def update_book(book_id: int, book: Book):
+    book_db[book_id] = book
+    return book
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int , book: Book):
+    book_db.pop(book_id)
+    return book

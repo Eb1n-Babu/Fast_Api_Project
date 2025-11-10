@@ -32,4 +32,5 @@ def update_student(student: Student, student_id: int):
 @app.delete("/students/{student_id}")
 def delete_student(student: Student , student_id: int):
     db_student.pop(student_id)
+    return student
 

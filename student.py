@@ -17,6 +17,7 @@ def get_students():
 
 @app.get("students/{student_id}")
 def get_student(student_id: int):
+    global db_student
     return db_student[student_id]
 
 @app.post("/students")
@@ -26,6 +27,7 @@ def create_student(student: Student):
 
 @app.put("/students/{student_id}")
 def update_student(student: Student, student_id: int):
+    global db_student
     db_student[student_id] = student
     return student
 

@@ -14,9 +14,10 @@ class Customer(BaseModel):
 def get_customers():
     return customer_db
 
-@app.get("/customer/{id}")
-def get_customer(id: int):
-    return customer_db[id]
+@app.get("/customer/{customer_id}")
+def get_customer(customer_id: int):
+    global customer_db
+    return customer_db[customer_id]
 
 @app.post("/customer")
 def create_customer(customer: Customer):
@@ -24,12 +25,13 @@ def create_customer(customer: Customer):
     return customer
 
 @app.put("/customer/{id}")
-def update_customer(customer: Customer, id: int):
-    customer_db[id] = customer
+def update_customer(customer: Customer,customer_id : int):
+    global customer_db
+    customer_db[customer_id] = customer
     return customer
 
 @app.delete("/customer/{id}")
-def delete_customer(customer: Customer, id: int):
-    customer_db.pop(id)
-    return customer
+def delete_customer(customer_id: int):
+    customer_db.pop(customer_id)
+    return Customer
 

@@ -5,7 +5,6 @@ from decouple import config
 
 app = FastAPI(title="Data base")
 
-
 conn = pymysql.connect(
     host="localhost",
     user= config("user1"),

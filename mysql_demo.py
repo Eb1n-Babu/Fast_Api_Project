@@ -1,34 +1,38 @@
-# app.py  →  Super Simple FastAPI + MySQL (India 2025)
 from fastapi import FastAPI
-import pymysql
 from decouple import config
+import mysql.connector
 
-app = FastAPI(title="My First API")
+app = FastAPI()
 
-
-conn = pymysql.connect(
-    host="localhost",
+connection  = mysql.connector.connect(
+host="localhost",
     user= config("user"),
     password= config("pass"),
     database=config("mydb"),
-    charset="utf8mb4"
 )
 
-@app.get("/")
-def home():
-    return {"message": "Namaste! Your API is LIVE"}
+@app.get("/students/")
+def get_students():
+    cursor = connection.cursor()
+    cursor.execute("select * from student")
+    students = cursor.fetchall()
+    cursor.close()
+    return students
 
-@app.post("/add")
-def add(name: str, email: str):
-    cur = conn.cursor()
-    cur.execute("INSERT INTO users (name, email) VALUES (%s, %s)", (name, email))
-    conn.commit()
-    return {"status": "Added!", "name": name, "email": email}
+@app.get("/student/{name")
+def get_students(name: str):
+    cursor = connection.cursor()
+    cursor.execute("select * from student where name = %s",(name,))
+    students = cursor.fetchall()
+    cursor.close()
+    return students
 
-@app.get("/users")
-def all_users():
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users")
-    rows = cur.fetchall()  # Store the result in a variable
-    cur.close()  # Good practice: close cursor after use
-    return {"users": rows}
+@app.post("/students/")
+def create_student(name,age,location):
+    cursor = connection.cursor()
+    cursor.execute("insert into student values(%s,%s,%s)", (name, age, location))
+    connection.commit()
+    return {"message": "Student added successfully"}
+
+
+

@@ -11,6 +11,8 @@ host="localhost",
     database=config("mydb"),
 )
 
+print(connection.is_connected)
+
 @app.get("/students/")
 def get_students():
     cursor = connection.cursor()

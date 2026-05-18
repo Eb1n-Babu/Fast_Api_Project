@@ -7,9 +7,9 @@ app = FastAPI(title="Data base")
 
 conn = pymysql.connect(
     host="localhost",
-    user= config("user1"),
-    password= config("pass1"),
-    database=config("mydb1"),
+    user= config("USER1"),
+    password= config("PASS1"),
+    database=config("MYDB1"),
     charset="utf8mb4"
 )
 

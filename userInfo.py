@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 import mysql.connector
+from decouple import config
 
 app = FastAPI()
 
 connection = mysql.connector.connect(
     host="localhost",
-    user="root",
-    passwd="@Ebinbabu2209",
+    user=config("USER1"),
+    passwd=config("PASS1"),
     database="userprofile",
     port="3306",
 )

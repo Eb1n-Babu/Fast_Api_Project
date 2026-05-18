@@ -6,9 +6,9 @@ app = FastAPI()
 
 connection  = mysql.connector.connect(
 host="localhost",
-    user= config("user"),
-    password= config("pass"),
-    database=config("mydb"),
+    user= config("USER1"),
+    password= config("PASS1"),
+    database=config("MYDB1"),
 )
 
 print(connection.is_connected)

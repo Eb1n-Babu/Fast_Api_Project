@@ -6,8 +6,8 @@ app = FastAPI()
 
 school_data = mysql.connector.connect(
     host="localhost",
-    user="root",
-    passwd=config("pass1"),
+    user=config("USER1"),
+    passwd=config("PASS1"),
     database="school",
     port="3306"
 )

@@ -1,4 +1,3 @@
-import decimal
 
 import mysql.connector
 from decouple import config
@@ -8,44 +7,63 @@ from fastapi import FastAPI
 app = FastAPI(title="Mobile data")
 
 mobiles = mysql.connector.connect(
-    host=config("MYSQL_HOST"),
-    user=config("MYSQL_USER_NAME"),
+    host="localhost",
+    user=config("USER_NAME"),
     password=config("PASSWORD"),
-    database=config("MYSQL_DATABASE_NAME"),
-    port=config("MYSQL_PORT"),
+    database=config("DATABASE_MOBILE"),
+    port=3306,
 )
 
-@app.get("/mobiles/")
+@app.get("/")
 def get_mobiles():
     cursor = mobiles.cursor()
     cursor.execute("SELECT * FROM products")
     data = cursor.fetchall()
     return data
 
-@app.get("/mobiles/{mobile_id}")
-def get_mobile(mobile_id: int):
+@app.get("/{product_id}")
+def get_mobile(product_id: int):
     cursor = mobiles.cursor()
-    cursor.execute("SELECT * FROM products WHERE id=%s",(mobile_id,))
+    cursor.execute("SELECT * FROM products WHERE product_id=%s",(product_id,))
     data = cursor.fetchone()
+    cursor.close()
     return data
 
-@app.post("/mobiles/{mobile_id}/update")
-def update_mobile(mobile_id: int ,brand:str,model:str,description:str,mobile_price:int):
+@app.post("/")
+def create_mobile(brand: str, model: str, description: str, price: float):
     cursor = mobiles.cursor()
-    cursor.execute("Update products set price=%s where id=%s",(mobile_id,brand,model,description,mobile_price))
+    sql = "INSERT INTO products (brand, model, description, price) VALUES (%s, %s, %s, %s)"
+    values = (brand, model, description, price)
+    cursor.execute(sql, values)
     mobiles.commit()
-    return f"Mobile {mobile_id} was updated successfully"
+    new_id = cursor.lastrowid
+    cursor.close()
+    return {"message": f"Mobile {brand} was created successfully", "product_id": new_id}
 
-@app.post("/mobiles/")
-def create_mobile(brand:str,model:str,description:str,mobile_price:int):
+@app.put("/{product_id}/update")
+def update_mobile(product_id: int,brand: str, model: str, description: str, price: float):
     cursor = mobiles.cursor()
-    cursor.execute("insert into products(brand,model,description,price) values (%s,%s,%s,%s)",(brand,model,description,mobile_price))
+    sql = "UPDATE products SET brand=%s, model=%s, description=%s, price=%s WHERE product_id=%s"
+    values = (product_id, brand, model, description, price)
+    cursor.execute(sql, values)
     mobiles.commit()
-    return f"Mobile {brand} was created successfully"
+    cursor.close()
+    return {"message": f"Mobile {brand} was updated successfully"}
 
-@app.delete("/mobiles/{mobile_id}")
-def delete_mobile(mobile_id: int):
+@app.patch("/{product_id}/partial_update")
+def partial_update_mobile(product_id: int,brand: str, model: str, description: str, price: float):
     cursor = mobiles.cursor()
-    cursor.execute("delete from products where id=%s",(mobile_id,))
+    sql = "UPDATE products SET brand=%s, model=%s, description=%s, price=%s WHERE product_id=%s"
+    values = (product_id, brand, model, description, price)
+    cursor.execute(sql, values)
     mobiles.commit()
-    return f"Mobile {mobile_id} was deleted successfully"
+    cursor.close()
+    return {"message": f"Mobile {brand} was updated successfully"}
+
+@app.delete("/{product_id}")
+def delete_mobile(product_id: int):
+    cursor = mobiles.cursor()
+    cursor.execute("DELETE FROM products WHERE product_id=%s", (product_id,))
+    mobiles.commit()
+    cursor.close()
+    return {"message": f"Mobile {product_id} deleted successfully"}

@@ -10,7 +10,7 @@ class Animals(BaseModel):
     animal_name: str
 
 
-@app.get("/animals/")
+@app.get("/")
 def get_animals():
     return animal_db
 
